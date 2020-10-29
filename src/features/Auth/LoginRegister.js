@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { useLocation, useHistory } from "react-router-dom";
+import { AuthContext } from "./Auth";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
@@ -17,7 +18,15 @@ export default function LoginRegister() {
 
   const [alert, setAlert] = useState(null);
   const { pathname } = useLocation();
+  const history = useHistory();
+  const { isAuthenticated: auth } = useContext(AuthContext);
   const isRegister = pathname === "/register";
+
+  useEffect(() => {
+    if (auth) {
+      history.push("/");
+    }
+  }, [history, auth]);
 
   function handleInputChange(e) {
     setErrors({ ...errors, [e.target.name]: "" });
@@ -50,8 +59,6 @@ export default function LoginRegister() {
     setErrors(newErrors);
     return isValid;
   }
-
-  console.log(errors);
 
   function handleSubmit(e) {
     e.preventDefault();

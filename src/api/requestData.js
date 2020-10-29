@@ -1,6 +1,6 @@
 import { GraphQLClient } from "graphql-request";
 
-async function requestData(query) {
+async function requestData(query, vars = {}) {
   const endpoint = "https://graphql.datocms.com/";
 
   const client = new GraphQLClient(endpoint, {
@@ -9,7 +9,7 @@ async function requestData(query) {
     },
   });
 
-  return await client.request(query);
+  return await client.request(query, vars);
 }
 
 export default requestData;

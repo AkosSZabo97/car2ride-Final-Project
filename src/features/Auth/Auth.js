@@ -16,7 +16,6 @@ function AuthContextProvider({ children }) {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
         // User is signed in.
-        console.log({ user });
         setValue({
           isAuthenticated: true,
           user,

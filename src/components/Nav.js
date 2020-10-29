@@ -29,12 +29,6 @@ export default function Nav() {
         <ul className="navbar-nav w-100">
           <li className="nav-item">
             <NavLink className="nav-link" exact to="/">
-              Home
-            </NavLink>
-          </li>
-
-          <li className="nav-item">
-            <NavLink className="nav-link" exact to="/car">
               Rent a Car
             </NavLink>
           </li>
@@ -42,6 +36,12 @@ export default function Nav() {
           <li className="nav-item">
             <NavLink className="nav-link" exact to="/van">
               Rent a Van
+            </NavLink>
+          </li>
+
+          <li className="nav-item">
+            <NavLink className="nav-link" exact to="/rentyourvehicle">
+              Rent your vehicle
             </NavLink>
           </li>
 

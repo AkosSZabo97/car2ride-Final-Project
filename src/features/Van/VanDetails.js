@@ -1,23 +1,24 @@
 import { gql } from "graphql-request";
 import React, { useEffect, useState } from "react";
 import requestData from "../../api/requestData";
-import { CarCards } from "./CarCards";
+import { VanCards } from "./VanCards";
 
-export default function CarDetails() {
+export default function VanDetails() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
     (async () => {
       const data = await requestData(gql`
         query {
-          allCars {
-            id
-            style
+          allVans {
             title
+            id
             year
+            transmission
             engine
             slug
-            transmission
+            seat
+            style
             price1
             price2
             price3
@@ -27,15 +28,12 @@ export default function CarDetails() {
             banner {
               url
             }
-            carousel {
-              url
-            }
           }
         }
       `);
-      setData(data.allCars);
+      setData(data.allVans);
     })();
   }, []);
 
-  return <CarCards data={data} />;
+  return <VanCards data={data} />;
 }
