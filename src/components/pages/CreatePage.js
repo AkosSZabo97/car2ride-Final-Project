@@ -19,6 +19,7 @@ export default function CreatePage() {
   const [price6, setPrice6] = useState("");
 
   const [vehicles, setVehicles] = useState([]);
+  const [file, setFile] = useState(null);
 
   const db = firebase.firestore();
   const { user } = useContext(AuthContext);
@@ -37,9 +38,22 @@ export default function CreatePage() {
     }
   }, [db, user]);
 
-  async function handleAddForm() {
+  async function handleAddForm(e) {
+    e.preventDefault();
+
     if (user) {
       try {
+        let imageUrl = "";
+
+        if (file) {
+          const imageRef = firebase
+            .storage()
+            .ref()
+            .child(`images/${Math.floor(Math.random() * 10000) + file.name}`);
+          const snapshot = await imageRef.put(file);
+          imageUrl = await snapshot.ref.getDownloadURL();
+        }
+
         const docRef = await db.collection("vehicles").add({
           carName: title,
           carYear: year,
@@ -58,12 +72,27 @@ export default function CreatePage() {
       } catch (error) {
         console.error("Error adding document: ", error);
       }
+      setTitle("");
+      setYear("");
+      setStyle("");
+      setEngine("");
+      setTransmission("");
+      setPrice1("");
+      setPrice2("");
+      setPrice3("");
+      setPrice4("");
+      setPrice5("");
+      setPrice6("");
     }
   }
 
   async function handleDelete(toDelete) {
     try {
       await db.collection("vehicles").doc(toDelete.id).delete();
+      if (toDelete.imageUrl) {
+        await firebase.storage().refFromURL(toDelete.imageUrl).delete();
+        console.log("Image deleted");
+      }
     } catch (error) {
       alert("Error removing document: ", error);
     }
@@ -71,12 +100,16 @@ export default function CreatePage() {
     setVehicles(vehicles.filter((vehicle) => vehicle !== toDelete));
   }
 
+  function handleFileUpload(e) {
+    setFile(e.target.files[0]);
+  }
+
   return (
     <>
       <div className="container pt-1">
         <h1>Rent your vehicle</h1>
         <div className="form pt-4 border border-secondary rounded-lg p-4">
-          <form onSubmit={handleAddForm}>
+          <form>
             <div className="form-group">
               <input
                 type="text"
@@ -90,13 +123,13 @@ export default function CreatePage() {
             </div>
             <div className="form-group">
               <input
-                type="text"
+                type="number"
                 name="year"
                 className="form-control"
                 placeholder="Year"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
-                required
+                requiered
               />
             </div>
             <div className="form-group">
@@ -200,7 +233,12 @@ export default function CreatePage() {
             </div>
             <div className="form-group">
               <div className="pt-2">
-                <button type="submit" className="btn btn-secondary btn-block">
+                <button
+                  type="submit"
+                  className="btn btn-secondary btn-block"
+                  onClick={handleAddForm}
+                  required
+                >
                   Submit
                 </button>
               </div>
